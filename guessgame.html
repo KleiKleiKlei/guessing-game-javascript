@@ -1,0 +1,200 @@
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+
+    <title>Number guessing game</title>
+  </head>
+
+    <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+    h1 {
+      text-align: center;
+      color: #2d6cdf;
+      margin-top: 40px;
+    }
+    .form {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(44, 62, 80, 0.1);
+      max-width: 350px;
+      margin: 30px auto;
+      padding: 25px 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    label {
+      font-size: 1.1em;
+      margin-bottom: 10px;
+      color: #34495e;
+    }
+    .guessField {
+      width: 80px;
+      padding: 8px;
+      margin-bottom: 15px;
+      border: 1px solid #b2bec3;
+      border-radius: 5px;
+      font-size: 1em;
+      text-align: center;
+    }
+    .guessSubmit {
+      background: #2d6cdf;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 18px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .guessSubmit:hover {
+      background: #1b4f9c;
+    }
+    .resultParas {
+      max-width: 350px;
+      margin: 0 auto;
+      margin-bottom: 30px;
+      padding: 15px 30px;
+      background: #f7faff;
+      border-radius: 10px;
+      box-shadow: 0 1px 4px rgba(44, 62, 80, 0.07);
+      text-align: center;
+    }
+    .guesses {
+      color: #636e72;
+      font-size: 1em;
+      margin-bottom: 8px;
+    }
+    .lastResult {
+      font-weight: bold;
+      font-size: 1.1em;
+      margin-bottom: 8px;
+      padding: 5px 0;
+      border-radius: 5px;
+    }
+    .lowOrHi {
+      color: #0984e3;
+      font-size: 1em;
+    }
+    button {
+      display: block;
+      margin: 20px auto;
+      background: #00b894;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 18px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #00897b;
+    }
+  </style>
+
+  <body>
+    <h1>Number guessing game</h1>
+
+    <p>
+      We have selected a random number between 1 and 100. See if you can guess
+      it in 10 turns or fewer. We'll tell you if your guess was too high or too
+      low.
+    </p>
+
+    <div class="form">
+      <label for="guessField">Enter a guess: </label>
+      <input
+        type="number"
+        min="1"
+        max="100"
+        required
+        id="guessField"
+        class="guessField" />
+      <input type="submit" value="Submit guess" class="guessSubmit" />
+    </div>
+
+    <div class="resultParas">
+      <p class="guesses"></p>
+      <p class="lastResult"></p>
+      <p class="lowOrHi"></p>
+    </div>
+
+    <script>
+      let randomNumber = Math.floor(Math.random() * 100) + 1;
+
+const guesses = document.querySelector(".guesses");
+const lastResult = document.querySelector(".lastResult");
+const lowOrHi = document.querySelector(".lowOrHi");
+
+const guessSubmit = document.querySelector(".guessSubmit");
+const guessField = document.querySelector(".guessField");
+
+let guessCount = 1;
+let resetButton;
+
+function checkGuess() {
+  const userGuess = Number(guessField.value);
+  if (guessCount === 1) {
+    guesses.textContent = "Previous guesses:";
+  }
+  guesses.textContent += ` ${userGuess}`;
+
+  if (userGuess === randomNumber) {
+    lastResult.textContent = "Congratulations! You got it right!";
+    lastResult.style.backgroundColor = "green";
+    lowOrHi.textContent = "";
+    setGameOver();
+  } else if (guessCount === 10) {
+    lastResult.textContent = "!!!GAME OVER!!!";
+    lowOrHi.textContent = "";
+    setGameOver();
+  } else {
+    lastResult.textContent = "Wrong!";
+    lastResult.style.backgroundColor = "red";
+    if (userGuess < randomNumber) {
+      lowOrHi.textContent = "Last guess was too low!";
+    } else if (userGuess > randomNumber) {
+      lowOrHi.textContent = "Last guess was too high!";
+    }
+  }
+
+  guessCount++;
+  guessField.value = "";
+  guessField.focus();
+}
+
+guessSubmit.addEventListener("click", checkGuess);
+
+function setGameOver() {
+  guessField.disabled = true;
+  guessSubmit.disabled = true;
+  resetButton = document.createElement("button");
+  resetButton.textContent = "Start new game";
+  document.body.append(resetButton);
+  resetButton.addEventListener("click", resetGame);
+}
+
+function resetGame() {
+  guessCount = 1;
+  guesses.textContent = "";
+  lastResult.textContent = "";
+  lastResult.style.backgroundColor = "";
+  lowOrHi.textContent = "";
+  guessField.disabled = false;
+  guessSubmit.disabled = false;
+  guessField.value = "";
+  guessField.focus();
+  resetButton.parentNode.removeChild(resetButton);
+  randomNumber = Math.floor(Math.random() * 100) + 1;
+}
+    </script>
+
+  </body>
+</html>
